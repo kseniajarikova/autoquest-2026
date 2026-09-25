@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="color-scheme" content="dark light" />
+  <title>Автоквест 2026</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="privacyShield" class="privacy-shield" hidden aria-hidden="true">
+    <p>Автоквест</p>
+    <p class="privacy-sub">Вернитесь на экран квеста</p>
+  </div>
+
+  <div class="app" id="appRoot">
+    <header class="top">
+      <div>
+        <p class="eyebrow" id="questSubtitle">День рождения</p>
+        <h1 id="questTitle">Автоквест 2026</h1>
+      </div>
+      <div class="timer" id="timerWrap" hidden>
+        <span id="liveTimer">0:00</span>
+        <small id="penaltyBadge"></small>
+      </div>
+    </header>
+
+    <p class="save-hint" id="saveHint" aria-live="polite"></p>
+
+    <section class="card" data-screen="register">
+      <h2>Регистрация команды</h2>
+      <p class="muted">
+        Таймер стартует в момент регистрации и <strong>не останавливается</strong>, если страница закроется —
+        при повторном открытии вы вернётесь на то же задание.
+      </p>
+      <p class="muted">
+        У каждой команды — <strong>свой телефон</strong> (или свой браузер). Так команды идут параллельно и не затирают чужой прогресс.
+        Если ввести то же название команды снова — продолжится сохранённая сессия.
+      </p>
+
+      <div class="photo-memo" id="photoMemo">
+        <h3>Фотоквест — сохраните список</h3>
+        <p class="warn-line">
+          Сделайте <strong>скриншот</strong> или нажмите «Скопировать список» и вставьте в командный чат
+          <em>до</em> старта.
+        </p>
+        <p class="rule-line">
+          Фото — в Telegram-чат команды с номером пункта (1–10).
+          За каждое отсутствующее или неверное фото организаторы добавят
+          <strong>+5 минут</strong> к итоговому времени.
+        </p>
+        <ol class="photo-list" id="photoListRegister"></ol>
+        <div class="row">
+          <button type="button" class="btn primary" id="copyPhotoList">Скопировать список</button>
+        </div>
+        <p class="copy-status" id="copyPhotoStatus" hidden></p>
+      </div>
+
+      <form id="registerForm" class="stack">
+        <label>
+          Название команды
+          <input id="teamName" name="team" autocomplete="off" required maxlength="60" placeholder="Например: Северный ветер" />
+        </label>
+        <button type="submit" class="btn primary">Начать / продолжить квест</button>
+      </form>
+    </section>
+
+    <section class="card" data-screen="resume" hidden>
+      <h2>Продолжить?</h2>
+      <p>На этом устройстве уже есть команда <strong id="resumeTeam"></strong>.</p>
+      <p class="muted" id="resumeStep"></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="resumeBtn">Продолжить</button>
+      </div>
+    </section>
+
+    <section class="card" data-screen="quest" hidden>
+      <div class="meta">
+        <span class="badge" id="stepBadge">Загадка</span>
+        <span id="progressText">Шаг 1</span>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+      <p class="team-line">Команда: <strong id="teamLabel"></strong></p>
+
+      <details class="photo-mini">
+        <summary>Фотоквест (памятка) — +5 мин за каждое фото</summary>
+        <p class="muted small">Список должны были сохранить в чат на старте. Кратко:</p>
+        <ol class="photo-list compact" id="photoListQuest"></ol>
+      </details>
+
+      <h2 id="stepTitle">Задание</h2>
+      <div class="question" id="stepQuestion"></div>
+      <p class="hint" id="stepHint" hidden></p>
+      <form id="answerForm" class="stack">
+        <label>
+          Ответ
+          <input id="answerInput" autocomplete="off" autocorrect="off" enterkeyhint="done" required />
+        </label>
+        <button type="submit" class="btn primary" id="answerSubmit">Отправить</button>
+      </form>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+    </section>
+
+    <section class="card" data-screen="finish" hidden>
+      <div id="finishBody"></div>
+      <div class="finish-stats">
+        <p>Команда: <strong id="finalTeam"></strong></p>
+        <p class="big-time">Ваше время: <strong id="finalTime"></strong></p>
+        <p class="muted" id="finalPenalty"></p>
+        <p class="warn-line" id="photoFinishNote"></p>
+      </div>
+      <details class="export">
+        <summary>Данные для организаторов (если таблица недоступна)</summary>
+        <textarea id="exportBox" class="allow-select" readonly rows="10"></textarea>
+        <button type="button" class="btn" id="copyExport">Скопировать итог</button>
+      </details>
+    </section>
+
+    <footer class="foot">
+      <p>Неверный ответ = +5 мин. Нет фото фотоквеста = +5 мин за каждое. Один звонок организатору — если совсем застряли.</p>
+    </footer>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/quests.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
