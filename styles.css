@@ -402,6 +402,10 @@ input:focus, textarea:focus {
   border: 1px solid var(--line);
 }
 
+.quest-img.polybius-img {
+  width: min(100%, 420px);
+}
+
 .quest-audio {
   display: block;
   width: min(100%, 360px);
