@@ -173,15 +173,17 @@
   async function postEvent(payload) {
     const endpoint = cfg().saveEndpoint;
     if (!endpoint) return { ok: false, skipped: true };
+    const body = JSON.stringify({ secret: cfg().saveSecret, ...payload });
+    // Apps Script: text/plain без preflight; no-cors — запись доходит даже при редиректе GAS
     try {
-      const res = await fetch(endpoint, {
+      await fetch(endpoint, {
         method: "POST",
-        mode: "cors",
+        mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ secret: cfg().saveSecret, ...payload }),
+        body,
         keepalive: true,
       });
-      return { ok: res.ok };
+      return { ok: true, opaque: true };
     } catch (err) {
       console.warn("save failed", err);
       return { ok: false, error: String(err) };
