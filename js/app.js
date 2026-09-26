@@ -3,9 +3,9 @@
   const quests = () => window.QUESTS;
   const photos = () => window.PHOTO_QUEST || [];
 
-  /** v2: несколько команд на одном устройстве + активная сессия */
-  const STORE_ROOT = "autoquest2026_v2";
-  const STORE_LEGACY = "autoquest2026_v1";
+  /** v3: новые тексты заданий на точках — старые сессии v2 не подхватываем */
+  const STORE_ROOT = "autoquest2026_v3";
+  const STORE_LEGACY = "autoquest2026_v2_unused";
 
   const $ = (sel) => document.querySelector(sel);
 
