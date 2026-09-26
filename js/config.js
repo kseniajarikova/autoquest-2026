@@ -10,7 +10,8 @@ window.QUEST_CONFIG = {
    * URL веб-приложения Google Apps Script (после «Развернуть» → …/exec).
    * Пока пусто — ответы только на телефоне; на финише можно скопировать JSON.
    */
-  saveEndpoint: "",
+  saveEndpoint:
+    "https://script.google.com/macros/s/AKfycbyxxaeNobWaLy0ZtaecIwW0fbmavdWo6m7fW1ICmTHoR0oGG0sTNc6itise4TtxUNKCPQ/exec",
   /** Секрет, тот же что в gas/Code.gs → SAVE_SECRET */
   saveSecret: "aq2026_Ks7mP9wX2nL4qR8v",
   /** Показывать таймер команде во время прохождения */
