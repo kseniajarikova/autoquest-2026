@@ -387,6 +387,34 @@ input:focus, textarea:focus {
   color: var(--good);
 }
 
+.quest-img {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin: 12px auto;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.vanya-warn {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(196, 92, 38, 0.12);
+  border-left: 4px solid var(--accent);
+  color: #7a3210;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.card-warn { margin-bottom: 14px; }
+
+.start-memo p { margin: 0 0 10px; line-height: 1.45; }
+
+.question img { max-width: 100%; }
+
 .save-hint {
   min-height: 1.2em;
   margin: 0 0 10px;
