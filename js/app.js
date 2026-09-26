@@ -3,9 +3,9 @@
   const quests = () => window.QUESTS;
   const photos = () => window.PHOTO_QUEST || [];
 
-  /** v5: ответ старта = последняя цифра цены */
-  const STORE_ROOT = "autoquest2026_v5";
-  const STORE_LEGACY = "autoquest2026_v4_unused";
+  /** v6: слайд фотоквеста + адрес на Норд + марка на старте */
+  const STORE_ROOT = "autoquest2026_v6";
+  const STORE_LEGACY = "autoquest2026_v5_unused";
 
   const $ = (sel) => document.querySelector(sel);
 
@@ -15,6 +15,17 @@
       .toLowerCase()
       .replace(/ё/g, "е")
       .replace(/\s+/g, " ");
+  }
+
+  /** Смягчённое сравнение адресов: без знаков препинания и кавычек */
+  function normalizeLoose(s) {
+    return normalize(s)
+      .replace(/[«»"'„“]/g, "")
+      .replace(/[.,;:!?()/\\-]/g, " ")
+      .replace(/\bд\b/g, " ")
+      .replace(/\bдом\b/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   function teamKey(name) {
@@ -105,13 +116,14 @@
 
   function newState(teamName) {
     return {
-      version: 4,
+      version: 6,
       teamName: teamName.trim(),
       teamId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       registeredAt: Date.now(),
+      photoReady: false,
       currentIndex: 0,
-      /** индекс шага, для которого уже нажали «мы на месте» (−1 = ни для какого) */
       arrivedForIndex: -1,
+      arrivals: [],
       penaltySeconds: 0,
       finished: false,
       finishedAt: null,
@@ -170,6 +182,17 @@
     });
   }
 
+  function answersMatch(quest, userText) {
+    const variants = [quest.answer, ...(quest.aliases || [])];
+    const n = normalize(userText);
+    const nl = normalizeLoose(userText);
+    return variants.some((v) => {
+      const a = normalize(v);
+      const al = normalizeLoose(v);
+      return n === a || nl === al;
+    });
+  }
+
   async function postEvent(payload) {
     const endpoint = cfg().saveEndpoint;
     if (!endpoint) return { ok: false, skipped: true };
@@ -188,12 +211,6 @@
       console.warn("save failed", err);
       return { ok: false, error: String(err) };
     }
-  }
-
-  function answersMatch(quest, userText) {
-    const n = normalize(userText);
-    const variants = [quest.answer, ...(quest.aliases || [])].map(normalize);
-    return variants.includes(n);
   }
 
   // --- UI ---
@@ -258,6 +275,10 @@
       renderFinish();
       return;
     }
+    if (!state.photoReady) {
+      renderPhotoScreen();
+      return;
+    }
     if (state.currentIndex >= quests().length) {
       state.finished = true;
       state.finishedAt = state.finishedAt || Date.now();
@@ -270,6 +291,28 @@
     if (opts.resumed) {
       setSaveHint("Прогресс восстановлен. Таймер шёл с момента регистрации.");
     }
+  }
+
+  function renderPhotoScreen() {
+    stopTimerLoop();
+    show("photo");
+    fillPhotoLists();
+    renderChrome();
+    setSaveHint("Сохраните список фотоквеста в чат, затем нажмите «Готовы?».");
+  }
+
+  function confirmPhotoReady() {
+    if (!state) return;
+    state.photoReady = true;
+    persist(state);
+    postEvent({
+      event: "photo_ready",
+      teamName: state.teamName,
+      teamId: state.teamId,
+      registeredAt: state.registeredAt,
+      at: Date.now(),
+    });
+    enterQuestSession(state);
   }
 
   function renderArrive(q) {
@@ -292,7 +335,20 @@
       renderQuest();
       return;
     }
+    const now = Date.now();
+    const arrivedAtIso = new Date(now).toISOString();
+    const elapsed = scoredSeconds(state, now);
     state.arrivedForIndex = state.currentIndex;
+    if (!Array.isArray(state.arrivals)) state.arrivals = [];
+    state.arrivals.push({
+      at: now,
+      arrivedAt: arrivedAtIso,
+      stepIndex: state.currentIndex,
+      stepId: q.id,
+      placeName: q.placeName || q.title,
+      scoredSeconds: elapsed,
+      scoredFormatted: formatDuration(elapsed),
+    });
     persist(state);
     postEvent({
       event: "arrive",
@@ -301,6 +357,11 @@
       stepIndex: state.currentIndex,
       stepId: q.id,
       placeName: q.placeName || q.title,
+      title: q.title,
+      type: "arrive",
+      arrivedAt: arrivedAtIso,
+      scoredSeconds: elapsed,
+      totalFormatted: formatDuration(elapsed),
     });
     renderQuest();
   }
@@ -367,6 +428,7 @@
         penaltySeconds: state.penaltySeconds,
         totalSeconds: total,
         totalFormatted: formatDuration(total),
+        arrivals: state.arrivals || [],
         answers: state.answers,
       },
       null,
@@ -551,6 +613,11 @@
     const arriveBtn = $("#arriveConfirm");
     if (arriveBtn) {
       arriveBtn.addEventListener("click", () => confirmArrive());
+    }
+
+    const photoReadyBtn = $("#photoReadyBtn");
+    if (photoReadyBtn) {
+      photoReadyBtn.addEventListener("click", () => confirmPhotoReady());
     }
 
     $("#copyExport").addEventListener("click", async () => {

@@ -39,32 +39,8 @@
         при повторном открытии вы вернётесь на то же задание.
       </p>
       <p class="muted">
-        У каждой команды — <strong>свой телефон</strong> (или свой браузер). Так команды идут параллельно и не затирают чужой прогресс.
-        Если ввести то же название команды снова — продолжится сохранённая сессия.
+        У каждой команды — <strong>свой телефон</strong>. После регистрации откроется фотоквест, затем стартовое задание.
       </p>
-
-      <p class="muted">
-        После регистрации сначала откроется <strong>стартовое задание со штрихкодом</strong>.
-        Дальше: загадка «куда ехать» → подтверждение «мы на точке» → задание на месте.
-      </p>
-
-      <div class="photo-memo" id="photoMemo">
-        <h3>Фотоквест — сохраните список</h3>
-        <p class="warn-line">
-          Сделайте <strong>скриншот</strong> или нажмите «Скопировать список» и вставьте в командный чат
-          <em>до</em> старта.
-        </p>
-        <p class="rule-line">
-          Фото — в Telegram-чат команды с номером пункта (1–10).
-          За каждое отсутствующее или неверное фото организаторы добавят
-          <strong>+5 минут</strong> к итоговому времени.
-        </p>
-        <ol class="photo-list" id="photoListRegister"></ol>
-        <div class="row">
-          <button type="button" class="btn primary" id="copyPhotoList">Скопировать список</button>
-        </div>
-        <p class="copy-status" id="copyPhotoStatus" hidden></p>
-      </div>
 
       <form id="registerForm" class="stack">
         <label>
@@ -73,6 +49,28 @@
         </label>
         <button type="submit" class="btn primary">Начать / продолжить квест</button>
       </form>
+    </section>
+
+    <section class="card" data-screen="photo" hidden>
+      <h2>Фотоквест</h2>
+      <p class="warn-line">
+        Сделайте <strong>скриншот</strong> или нажмите «Скопировать список» и вставьте в командный чат
+        <em>до</em> старта маршрута.
+      </p>
+      <p class="rule-line">
+        Фото — в Telegram-чат команды с номером пункта (1–10).
+        За каждое отсутствующее или неверное фото организаторы добавят
+        <strong>+5 минут</strong> к итоговому времени.
+      </p>
+      <ol class="photo-list" id="photoListRegister"></ol>
+      <div class="row">
+        <button type="button" class="btn" id="copyPhotoList">Скопировать список</button>
+      </div>
+      <p class="copy-status" id="copyPhotoStatus" hidden></p>
+      <p class="muted" style="margin-top:16px">Когда список сохранён в чат — подтвердите готовность.</p>
+      <div class="row">
+        <button type="button" class="btn primary" id="photoReadyBtn">Готовы? Начать маршрут</button>
+      </div>
     </section>
 
     <section class="card" data-screen="resume" hidden>
@@ -94,11 +92,10 @@
       <h2>Вы уже на точке?</h2>
       <p class="arrive-place">Точка: <strong id="arrivePlace"></strong></p>
       <p class="muted">
-        Откройте задание на месте только когда команда реально стоит у объекта.
-        Раньше — не надо: подсказки рассчитаны на осмотр с места.
+        Задание на месте откроется только после подтверждения.
       </p>
       <div class="row">
-        <button type="button" class="btn primary" id="arriveConfirm">Да, мы на месте</button>
+        <button type="button" class="btn primary" id="arriveConfirm">Мы на месте</button>
       </div>
     </section>
 
@@ -112,7 +109,7 @@
 
       <details class="photo-mini">
         <summary>Фотоквест (памятка) — +5 мин за каждое фото</summary>
-        <p class="muted small">Список должны были сохранить в чат на старте. Кратко:</p>
+        <p class="muted small">Список должны были сохранить в чат до старта. Кратко:</p>
         <ol class="photo-list compact" id="photoListQuest"></ol>
       </details>
 
