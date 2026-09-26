@@ -183,9 +183,22 @@
   }
 
   function answersMatch(quest, userText) {
-    const variants = [quest.answer, ...(quest.aliases || [])];
     const n = normalize(userText);
     const nl = normalizeLoose(userText);
+    const contains = quest.answerContains;
+    if (contains) {
+      const needles = Array.isArray(contains) ? contains : [contains];
+      if (
+        needles.some((needle) => {
+          const a = normalize(needle);
+          const al = normalizeLoose(needle);
+          return (a && n.includes(a)) || (al && nl.includes(al));
+        })
+      ) {
+        return true;
+      }
+    }
+    const variants = [quest.answer, ...(quest.aliases || [])];
     return variants.some((v) => {
       const a = normalize(v);
       const al = normalizeLoose(v);
