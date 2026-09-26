@@ -135,6 +135,7 @@ window.QUESTS = [
     type: "quiz",
     title: "Загадка 3 — куда ехать",
     question:
+      "Мальчик Ваня был в этом месте впервые ещё тогда, когда читал только по слогам.\n\n" +
       '<img class="quest-img fence-img" src="images/fence-cipher.png" alt="" />',
     answer: "детский травмпункт выборгского района",
     aliases: [
