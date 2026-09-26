@@ -203,7 +203,8 @@ window.QUESTS = [
     type: "quiz",
     title: "Загадка 5 — куда ехать",
     question:
-      '<img class="quest-img" src="images/rebus-lopukhinsky-sad.png" alt="" />',
+      "Прочитайте семафор сигнальщика. Два слова — название места.\n\n" +
+      '<img class="quest-img" src="images/semaphore-lopukhinsky-sad.png" alt="" />',
     answer: "лопухинский сад",
     aliases: [
       "лопухинский",
