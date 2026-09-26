@@ -408,6 +408,48 @@ input:focus, textarea:focus {
   margin: 8px auto 14px;
 }
 
+.polybius-wrap {
+  overflow-x: auto;
+  margin: 12px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.polybius-board {
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  background: #fff;
+}
+
+.polybius-board th,
+.polybius-board td {
+  border: 1px solid var(--line);
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  vertical-align: middle;
+  padding: 2px;
+}
+
+.polybius-board thead th,
+.polybius-board tbody th {
+  background: #e8e0d4;
+  font-weight: 700;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.polybius-board tbody tr:nth-child(odd) td:nth-child(even),
+.polybius-board tbody tr:nth-child(even) td:nth-child(odd) {
+  background: #f0e6d8;
+}
+
+.polybius-board tbody tr:nth-child(odd) td:nth-child(odd),
+.polybius-board tbody tr:nth-child(even) td:nth-child(even) {
+  background: #fffdf8;
+}
+
 .vanya-warn {
   margin: 0 0 14px;
   padding: 10px 12px;
