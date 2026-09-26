@@ -3,9 +3,9 @@
   const quests = () => window.QUESTS;
   const photos = () => window.PHOTO_QUEST || [];
 
-  /** v4: старт→quiz→«на точке?»→task; старые сессии не подхватываем */
-  const STORE_ROOT = "autoquest2026_v4";
-  const STORE_LEGACY = "autoquest2026_v3_unused";
+  /** v5: ответ старта = последняя цифра цены */
+  const STORE_ROOT = "autoquest2026_v5";
+  const STORE_LEGACY = "autoquest2026_v4_unused";
 
   const $ = (sel) => document.querySelector(sel);
 
