@@ -387,6 +387,13 @@
     $("#stepQuestion").innerHTML = String(q.question || "").replace(/\n/g, "<br>");
     $("#stepHint").textContent = q.hint || "";
     $("#stepHint").hidden = !q.hint;
+    const photoMini = document.querySelector(".photo-mini");
+    if (photoMini) {
+      // Памятка только на финальном задании (в начале — отдельный слайд «Фотоквест»)
+      const showMemo = q.id === "finale";
+      photoMini.hidden = !showMemo;
+      if (showMemo) photoMini.open = true;
+    }
     $("#answerInput").value = "";
     $("#feedback").textContent = "";
     $("#feedback").className = "feedback";
