@@ -135,8 +135,7 @@ window.QUESTS = [
     type: "quiz",
     title: "Загадка 3 — куда ехать",
     question:
-      "Н Й Р Г К Г О Ы Т Н П В Р Й К Т Д\n" +
-      " А О А О О С Р Б В К У М А Т И С Е",
+      '<img class="quest-img fence-img" src="images/fence-cipher.png" alt="" />',
     answer: "детский травмпункт выборгского района",
     aliases: [
       "детский травмпункт выборгского р-на",
