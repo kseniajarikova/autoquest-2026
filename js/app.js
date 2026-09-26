@@ -3,9 +3,9 @@
   const quests = () => window.QUESTS;
   const photos = () => window.PHOTO_QUEST || [];
 
-  /** v3: новые тексты заданий на точках — старые сессии v2 не подхватываем */
-  const STORE_ROOT = "autoquest2026_v3";
-  const STORE_LEGACY = "autoquest2026_v2_unused";
+  /** v4: старт→quiz→«на точке?»→task; старые сессии не подхватываем */
+  const STORE_ROOT = "autoquest2026_v4";
+  const STORE_LEGACY = "autoquest2026_v3_unused";
 
   const $ = (sel) => document.querySelector(sel);
 
@@ -105,17 +105,32 @@
 
   function newState(teamName) {
     return {
-      version: 2,
+      version: 4,
       teamName: teamName.trim(),
       teamId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       registeredAt: Date.now(),
       currentIndex: 0,
+      /** индекс шага, для которого уже нажали «мы на месте» (−1 = ни для какого) */
+      arrivedForIndex: -1,
       penaltySeconds: 0,
       finished: false,
       finishedAt: null,
       answers: [],
       questCount: quests().length,
     };
+  }
+
+  function needsArrivalGate(q) {
+    if (!q || q.type !== "task") return false;
+    return q.needsArrival !== false;
+  }
+
+  function stepBadgeLabel(q) {
+    if (!q) return "Шаг";
+    if (q.id === "s0") return "Старт";
+    if (q.id === "finale") return "Финал";
+    if (q.type === "quiz") return "Куда ехать";
+    return "На месте";
   }
 
   function scoredSeconds(st, now = Date.now()) {
@@ -255,6 +270,39 @@
     }
   }
 
+  function renderArrive(q) {
+    show("arrive");
+    const total = quests().length;
+    const done = Math.min(state.currentIndex, total);
+    $("#arriveProgress").textContent = `Шаг ${done + 1} из ${total}`;
+    $("#arriveProgressBar").style.width = `${(done / total) * 100}%`;
+    $("#arriveTeam").textContent = state.teamName;
+    $("#arrivePlace").textContent = q.placeName || q.title || "точка маршрута";
+    renderChrome();
+    setSaveHint("Подтвердите прибытие — тогда откроется задание на месте.");
+  }
+
+  function confirmArrive() {
+    if (!state || state.finished) return;
+    const list = quests();
+    const q = list[state.currentIndex];
+    if (!needsArrivalGate(q)) {
+      renderQuest();
+      return;
+    }
+    state.arrivedForIndex = state.currentIndex;
+    persist(state);
+    postEvent({
+      event: "arrive",
+      teamName: state.teamName,
+      teamId: state.teamId,
+      stepIndex: state.currentIndex,
+      stepId: q.id,
+      placeName: q.placeName || q.title,
+    });
+    renderQuest();
+  }
+
   function renderQuest() {
     const list = quests();
     if (state.currentIndex >= list.length) {
@@ -262,13 +310,18 @@
       return;
     }
 
-    show("quest");
     const q = list[state.currentIndex];
-    $("#stepBadge").textContent = q.type === "quiz" ? "Загадка" : "На месте";
+
+    // После верной загадки «куда ехать» — сначала спросить, на точке ли команда
+    if (needsArrivalGate(q) && state.arrivedForIndex !== state.currentIndex) {
+      renderArrive(q);
+      return;
+    }
+
+    show("quest");
+    $("#stepBadge").textContent = stepBadgeLabel(q);
     $("#stepTitle").textContent = q.title || `Шаг ${state.currentIndex + 1}`;
-    $("#stepQuestion").innerHTML = String(q.question || "")
-      .replace(/\n/g, "<br>");
-    // уже может содержать <strong> из текстов заданий
+    $("#stepQuestion").innerHTML = String(q.question || "").replace(/\n/g, "<br>");
     $("#stepHint").textContent = q.hint || "";
     $("#stepHint").hidden = !q.hint;
     $("#answerInput").value = "";
@@ -456,12 +509,16 @@
       return;
     }
 
-    $("#feedback").textContent = "Верно! Следующее задание…";
+    const next = list[state.currentIndex];
+    const msg = needsArrivalGate(next)
+      ? "Верно! Когда будете на точке — подтвердите прибытие."
+      : "Верно! Следующее задание…";
+    $("#feedback").textContent = msg;
     $("#feedback").className = "feedback good";
     setTimeout(() => {
       submitting = false;
       renderQuest();
-    }, 400);
+    }, 450);
   }
 
   function showRegister() {
@@ -488,6 +545,11 @@
       e.preventDefault();
       submitAnswer();
     });
+
+    const arriveBtn = $("#arriveConfirm");
+    if (arriveBtn) {
+      arriveBtn.addEventListener("click", () => confirmArrive());
+    }
 
     $("#copyExport").addEventListener("click", async () => {
       const text = $("#exportBox").value;

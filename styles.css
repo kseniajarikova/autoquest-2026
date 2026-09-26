@@ -142,6 +142,11 @@ body.privacy-on .app {
 
 .muted { color: var(--muted); }
 
+.arrive-place {
+  font-size: 1.1rem;
+  margin: 12px 0 8px;
+}
+
 .stack {
   display: grid;
   gap: 12px;

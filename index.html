@@ -43,14 +43,10 @@
         Если ввести то же название команды снова — продолжится сохранённая сессия.
       </p>
 
-      <div class="photo-memo start-memo">
-        <h3>Стартовая точка — первая подсказка</h3>
-        <p>По словам мамы мальчика Вани он родился в <strong>8.40</strong> — не зря мальчик Ваня писал вам в чате «кто рано встаёт» и т.д.</p>
-        <p>Мальчик Ваня в детстве любил играть в одну игру, где главный герой пытается оказаться в нескольких местах одновременно, перемещаясь очень быстро и показывая недюжую ловкость.</p>
-        <p>Мальчик Ваня предлагает вам не торопиться (а если поторопились — советует вернуться) и поискать первую подсказку с помощью информации и вот этой картинки:</p>
-        <img class="quest-img" src="images/barcode.png" alt="Штрихкод" />
-        <p class="muted">Штрихкод: 4607012590114</p>
-      </div>
+      <p class="muted">
+        После регистрации сначала откроется <strong>стартовое задание со штрихкодом</strong>.
+        Дальше: загадка «куда ехать» → подтверждение «мы на точке» → задание на месте.
+      </p>
 
       <div class="photo-memo" id="photoMemo">
         <h3>Фотоквест — сохраните список</h3>
@@ -85,6 +81,24 @@
       <p class="muted" id="resumeStep"></p>
       <div class="row">
         <button type="button" class="btn primary" id="resumeBtn">Продолжить</button>
+      </div>
+    </section>
+
+    <section class="card" data-screen="arrive" hidden>
+      <div class="meta">
+        <span class="badge">На точке?</span>
+        <span id="arriveProgress">Шаг</span>
+      </div>
+      <div class="progress"><i id="arriveProgressBar"></i></div>
+      <p class="team-line">Команда: <strong id="arriveTeam"></strong></p>
+      <h2>Вы уже на точке?</h2>
+      <p class="arrive-place">Точка: <strong id="arrivePlace"></strong></p>
+      <p class="muted">
+        Откройте задание на месте только когда команда реально стоит у объекта.
+        Раньше — не надо: подсказки рассчитаны на осмотр с места.
+      </p>
+      <div class="row">
+        <button type="button" class="btn primary" id="arriveConfirm">Да, мы на месте</button>
       </div>
     </section>
 
