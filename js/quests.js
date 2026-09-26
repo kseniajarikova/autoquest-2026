@@ -166,7 +166,9 @@ window.QUESTS = [
     type: "quiz",
     title: "Загадка 4 — куда ехать",
     question:
-      '<img class="quest-img" src="images/rebus-beloostrovskaya-22.png" alt="" />',
+      "Пройдите единственный путь от СТАРТ до ФИНИШ. Ключ — 14: вычтите его из каждого числа на пути.\n\n" +
+      "Первые числа — номера букв русского алфавита без ё (А=1 … Я=32). Последнее число — номер дома.\n\n" +
+      '<img class="quest-img" src="images/math-maze-beloostrovskaya.png" alt="" />',
     answer: "белоостровская 22",
     aliases: [
       "белоостровская, 22",
