@@ -33,6 +33,20 @@ html, body {
 
 body {
   padding: 20px 14px 40px;
+  position: relative;
+}
+
+/* Логотип автоквеста — тихий фон */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    url("images/bg-logo.png") center 42% / min(72vw, 420px) no-repeat;
+  opacity: 0.14;
+  filter: brightness(1.35) contrast(1.05);
 }
 
 /* копирование только там, где нужно вводить / экспортировать */
@@ -78,6 +92,8 @@ body.privacy-on .app {
 }
 
 .app {
+  position: relative;
+  z-index: 1;
   width: min(560px, 100%);
   margin: 0 auto;
 }
