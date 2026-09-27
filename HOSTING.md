@@ -6,16 +6,12 @@
 https://kseniajarikova.github.io/autoquest-2026/
 
 **Зеркало 1 — jsDelivr CDN** (часто открывается из РФ стабильнее, чем github.io):  
-https://cdn.jsdelivr.net/gh/kseniajarikova/autoquest-2026@master/index.html
+https://cdn.jsdelivr.net/gh/kseniajarikova/autoquest-2026@4cbaf6e/index.html
 
 **Зеркало 2 — jsDelivr (альтернативный узел):**  
-https://fastly.jsdelivr.net/gh/kseniajarikova/autoquest-2026@master/index.html
+https://fastly.jsdelivr.net/gh/kseniajarikova/autoquest-2026@4cbaf6e/index.html
 
-Если основная не открывается — сразу зеркало 1 или 2. Прогресс на телефоне команды свой (localStorage); ответы в Google Sheet уходят с того же устройства.
-
-> После правок в репозитории jsDelivr может кэшировать 1–24 ч. Если видите старую версию на зеркале — откройте с хешем коммита:  
-> `https://cdn.jsdelivr.net/gh/kseniajarikova/autoquest-2026@КОММИТ/index.html`  
-> (КОММИТ = короткий sha с GitHub) или подождите / смените сеть.
+Ссылки с `@4cbaf6e` — актуальный снимок (без долгого кэша `@master`). После следующих правок обновите хеш коммита в ссылке или временно используйте `@master` (кэш до суток).
 
 ## Как это работает
 - Все команды открывают **одну и ту же ссылку** с интернетом.
