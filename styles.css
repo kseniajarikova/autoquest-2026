@@ -319,6 +319,12 @@ input:focus, textarea:focus {
 
 .foot p { margin: 0; }
 
+.foot .copy {
+  margin-top: 10px;
+  opacity: 0.75;
+  font-size: 0.78rem;
+}
+
 .photo-memo {
   margin: 16px 0 18px;
   padding: 14px 14px 12px;
