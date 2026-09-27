@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>КЛЮЧ — только организаторам</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
+    .warn {
+      background: #fff1f0; border-left: 4px solid #9b2c2c; padding: 10px 12px;
+      border-radius: 8px; margin-bottom: 14px;
+    }
+    code { background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Не отдавать командам</p>
+        <h1>Ключ ответов 2026</h1>
+      </div>
+    </header>
+    <section class="card">
+      <div class="warn">Эта страница — только для проверки. Командам давать <a href="index.html">index.html</a>.</div>
+      <p class="muted">Логика: старт (штрихкод) → загадка → «мы на месте» → задание на точке → … → финал.</p>
+      <p class="muted">Старт: товар по штрихкоду → торговая марка <strong>«кто рано встаёт»</strong> (поле <code>answer</code> у id <code>s0</code>).</p>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Тип</th><th>Куда / суть</th><th>Правильный ответ</th><th>Ещё принимаются</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p><a class="btn primary" href="index.html">Открыть страницу квеста</a></p>
+    </section>
+  </div>
+  <script src="js/quests.js"></script>
+  <script>
+    const places = {
+      s0: "старт · штрихкод",
+      q1: "ТРК Норд",
+      t1: "на месте · Буквоед",
+      q2: "Озерки",
+      t2: "на месте · Озерки",
+      q3: "травмпункт Выборгского",
+      t3: "на месте · травмпункт",
+      q4: "Белоостровская 22",
+      t4: "на месте · Белоостровская",
+      q5: "Лопухинский сад",
+      t5: "на месте · сад",
+      q6: "Ординарная",
+      t6: "на месте · поле",
+      q7: "Сампсониевский 21",
+      t7: "на месте · дом",
+      q8: "Александровский парк 4",
+      t8: "на месте · парк",
+      finale: "финал · дата",
+    };
+    const tb = document.getElementById("rows");
+    QUESTS.forEach((q, i) => {
+      const tr = document.createElement("tr");
+      const gate = q.type === "task" && q.needsArrival !== false ? " + «на месте?»" : "";
+      tr.innerHTML = `<td>${i + 1}</td>
+        <td>${q.type}${gate}</td>
+        <td>${places[q.id] || q.title}</td>
+        <td><strong>${q.answer}</strong></td>
+        <td>${(q.aliases || []).join("; ") || "—"}</td>`;
+      tb.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
