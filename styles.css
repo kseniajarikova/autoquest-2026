@@ -492,6 +492,13 @@ input:focus, textarea:focus {
   font-weight: 600;
 }
 
+.vanya-warn-check {
+  background: rgba(155, 44, 44, 0.12);
+  border-left-color: #9b2c2c;
+  color: #7a1f1f;
+  text-align: center;
+}
+
 .card-warn { margin-bottom: 14px; }
 
 .start-memo p { margin: 0 0 10px; line-height: 1.45; }
