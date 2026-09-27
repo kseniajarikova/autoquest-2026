@@ -5,7 +5,7 @@
  */
 const WARN =
   '<p class="vanya-warn">Помните, что мальчик Ваня старается помочь всем внимательным! Запоминайте (сохраняйте) информацию и ответы — они вам пригодятся! Всем удачи!</p>\n' +
-  '<p class="vanya-warn vanya-warn-check">Будьте <strong>ВНИМАТЕЛЬНЫ</strong> и <strong>ПРОВЕРЯЙТЕ ОТВЕТ</strong> перед отправкой!</p>\n\n';
+  '<p class="vanya-warn vanya-warn-check">Будьте <strong>ВНИМАТЕЛЬНЫ</strong> и <strong>ВСЕГДА ПРОВЕРЯЙТЕ ОТВЕТ</strong> перед отправкой!</p>\n\n';
 
 window.QUESTS = [
   // ——— Старт ———
@@ -45,7 +45,7 @@ window.QUESTS = [
       '<audio class="quest-audio" controls preload="auto" src="audio/leva-sever.mp3"></audio>\n\n' +
       "<p><strong>Подсказка 3:</strong></p>\n" +
       '<audio class="quest-audio" controls preload="auto" src="audio/leva-diktofon2.mp3"></audio>\n\n' +
-      "Если хотите проверить, куда вам дальше ехать — напишите адрес.",
+      "Если хотите проверить, куда вам дальше ехать — напишите название локации.",
     answer: "пр. просвещения, д. 19",
     aliases: [
       "пр просвещения д 19",

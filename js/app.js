@@ -3,9 +3,9 @@
   const quests = () => window.QUESTS;
   const photos = () => window.PHOTO_QUEST || [];
 
-  /** v6: слайд фотоквеста + адрес на Норд + марка на старте */
-  const STORE_ROOT = "autoquest2026_v6";
-  const STORE_LEGACY = "autoquest2026_v5_unused";
+  /** v7: таймер с «Готовы?» после фотоквеста */
+  const STORE_ROOT = "autoquest2026_v7";
+  const STORE_LEGACY = "autoquest2026_v6";
 
   const $ = (sel) => document.querySelector(sel);
 
@@ -116,10 +116,12 @@
 
   function newState(teamName) {
     return {
-      version: 6,
+      version: 7,
       teamName: teamName.trim(),
       teamId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       registeredAt: Date.now(),
+      /** Счётчик времени — с «Готовы? Начать маршрут»; до этого null */
+      startedAt: null,
       photoReady: false,
       currentIndex: 0,
       arrivedForIndex: -1,
@@ -145,9 +147,19 @@
     return "На месте";
   }
 
+  function timerStartAt(st) {
+    if (!st) return null;
+    if (st.startedAt) return st.startedAt;
+    // старые сессии v6: таймер шёл с регистрации
+    if (st.photoReady && st.registeredAt) return st.registeredAt;
+    return null;
+  }
+
   function scoredSeconds(st, now = Date.now()) {
+    const start = timerStartAt(st);
+    if (!start) return st.penaltySeconds || 0;
     const end = st.finished && st.finishedAt ? st.finishedAt : now;
-    const raw = Math.floor((end - st.registeredAt) / 1000);
+    const raw = Math.floor((end - start) / 1000);
     return Math.max(0, raw) + (st.penaltySeconds || 0);
   }
 
@@ -249,7 +261,8 @@
     $("#questTitle").textContent = cfg().title;
     $("#questSubtitle").textContent = cfg().subtitle;
     const timerWrap = $("#timerWrap");
-    if (!cfg().showLiveTimer || !state || state.finished) {
+    const running = state && timerStartAt(state) && !state.finished;
+    if (!cfg().showLiveTimer || !running) {
       timerWrap.hidden = true;
       return;
     }
@@ -304,7 +317,7 @@
     startTimerLoop();
     renderQuest();
     if (opts.resumed) {
-      setSaveHint("Прогресс восстановлен. Таймер шёл с момента регистрации.");
+      setSaveHint("Прогресс восстановлен. Таймер идёт с момента «Готовы? Начать маршрут».");
     }
   }
 
@@ -319,13 +332,15 @@
   function confirmPhotoReady() {
     if (!state) return;
     state.photoReady = true;
+    if (!state.startedAt) state.startedAt = Date.now();
     persist(state);
     postEvent({
       event: "photo_ready",
       teamName: state.teamName,
       teamId: state.teamId,
       registeredAt: state.registeredAt,
-      at: Date.now(),
+      startedAt: state.startedAt,
+      at: state.startedAt,
     });
     enterQuestSession(state);
   }
@@ -535,7 +550,9 @@
       title: q.title,
       answerGiven: raw,
       correct: ok,
-      elapsedRawSec: Math.floor((now - state.registeredAt) / 1000),
+      elapsedRawSec: timerStartAt(state)
+        ? Math.floor((now - timerStartAt(state)) / 1000)
+        : 0,
       penaltyBefore: state.penaltySeconds,
     };
     state.answers.push(entry);
