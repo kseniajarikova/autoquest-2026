@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Обратная связь — Автоквест 2026</title>
+  <base href="./" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .fb-q { margin: 0 0 16px; }
+    .fb-q legend, .fb-q > span {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+    .choices label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+    .choices input { width: auto; }
+    .req { color: var(--bad); }
+    #thanks { display: none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Анонимно</p>
+        <h1>Как вам квест?</h1>
+      </div>
+    </header>
+    <section class="card" id="formCard">
+      <p class="muted">Имя, почта и команда не спрашиваем. 2–3 минуты.</p>
+      <form id="fb" class="stack">
+        <fieldset class="fb-q">
+          <legend>Общая оценка квеста <span class="req">*</span></legend>
+          <div class="choices" id="overall"></div>
+        </fieldset>
+        <fieldset class="fb-q">
+          <legend>Насколько было весело <span class="req">*</span></legend>
+          <div class="choices" id="fun"></div>
+        </fieldset>
+        <fieldset class="fb-q">
+          <legend>Сложность загадок <span class="req">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="difficulty" value="Слишком легко" required /> Слишком легко</label>
+            <label><input type="radio" name="difficulty" value="В самый раз" /> В самый раз</label>
+            <label><input type="radio" name="difficulty" value="Слишком сложно" /> Слишком сложно</label>
+          </div>
+        </fieldset>
+        <fieldset class="fb-q">
+          <legend>Длительность <span class="req">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="duration" value="Коротко" required /> Коротко</label>
+            <label><input type="radio" name="duration" value="В самый раз" /> В самый раз</label>
+            <label><input type="radio" name="duration" value="Долго" /> Долго</label>
+          </div>
+        </fieldset>
+        <fieldset class="fb-q">
+          <legend>Фотоквест <span class="req">*</span></legend>
+          <div class="choices" id="photo"></div>
+        </fieldset>
+        <label class="fb-q">Что запомнилось больше всего
+          <textarea name="memorable" rows="3" maxlength="1000"></textarea>
+        </label>
+        <label class="fb-q">Что было непонятно или мешало
+          <textarea name="friction" rows="3" maxlength="1000"></textarea>
+        </label>
+        <fieldset class="fb-q">
+          <legend>Приехали бы ещё раз <span class="req">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="again" value="Да" required /> Да</label>
+            <label><input type="radio" name="again" value="Скорее да" /> Скорее да</label>
+            <label><input type="radio" name="again" value="Скорее нет" /> Скорее нет</label>
+            <label><input type="radio" name="again" value="Нет" /> Нет</label>
+          </div>
+        </fieldset>
+        <label class="fb-q">Что обязательно оставить в следующем году
+          <textarea name="keep" rows="3" maxlength="1000"></textarea>
+        </label>
+        <label class="fb-q">Свободный комментарий
+          <textarea name="comment" rows="3" maxlength="1000"></textarea>
+        </label>
+        <button type="submit" class="btn primary" id="send">Отправить</button>
+        <p class="muted" id="err" hidden></p>
+      </form>
+      <div id="thanks">
+        <h2>Спасибо</h2>
+        <p>Ответ записан. Можно закрыть страницу.</p>
+      </div>
+    </section>
+  </div>
+  <script src="js/config.js"></script>
+  <script>
+    function scale(id, name, left, right) {
+      const box = document.getElementById(id);
+      for (let n = 1; n <= 5; n++) {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = name;
+        input.value = String(n);
+        input.required = n === 1;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" " + n));
+        box.appendChild(label);
+      }
+      const hint = document.createElement("p");
+      hint.className = "muted";
+      hint.textContent = "1 — " + left + ", 5 — " + right;
+      box.parentElement.appendChild(hint);
+    }
+    scale("overall", "overall", "слабо", "отлично");
+    scale("fun", "fun", "скучно", "очень весело");
+    scale("photo", "photo", "лишний", "в тему");
+
+    document.getElementById("fb").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const cfg = window.QUEST_CONFIG || {};
+      const fd = new FormData(e.target);
+      const answers = Object.fromEntries(fd.entries());
+      const btn = document.getElementById("send");
+      const err = document.getElementById("err");
+      btn.disabled = true;
+      err.hidden = true;
+      if (!cfg.saveEndpoint) {
+        err.hidden = false;
+        err.textContent = "Некуда отправить ответ. Напишите организатору.";
+        btn.disabled = false;
+        return;
+      }
+      try {
+        await fetch(cfg.saveEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            secret: cfg.saveSecret,
+            event: "feedback",
+            teamName: "",
+            anonymous: true,
+            ...answers,
+          }),
+        });
+        document.getElementById("fb").hidden = true;
+        document.getElementById("thanks").style.display = "block";
+      } catch (ex) {
+        err.hidden = false;
+        err.textContent = "Не отправилось. Проверьте интернет и попробуйте ещё раз.";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
